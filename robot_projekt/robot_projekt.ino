@@ -1,6 +1,6 @@
-// pragma bruges til at gøre vores kode mere læsbar og struktureret. Det gør
+// pragma region bruges til at gøre vores kode mere læsbar og struktureret. Det gør
 // så man kan kollapse koden i Visual Studio. Når koden bliver compiled ser compileren
-// bort fra pragma ligesom den gør ved kommentarer
+// bort fra pragma region ligesom den gør ved kommentarer
 #pragma region Libraries, Objects and ENUMs
 
 // bibliotek
@@ -65,13 +65,13 @@ public:
 
         // konverterer fra unsigned int (byte) til signed int
         int8_t MLSpeed = mLSpeed - 127;
-        int8_t MRSpeed = mRSpeed - 127;
+        int8_t MRSpeed = -(mRSpeed - 127);
 
         // fordi robotten ikke skal køre motoren hvis den får data fra appen som er tæt på 0.
         // Lægger 150 til eller fra, fordi det er minimum hastighed for at robotten
-        // overhovedet vil bevæge sig. MLSpeed og MRSpeed kan højest være på 80 eller -80 pga.
-        // appens opbygning.
-        if (MLSpeed < -25) {
+        // overhovedet vil bevæge sig. MLSpeed og MRSpeed kan højest være på 
+        // ca. 80 eller -80 pga. appens opbygning.
+        if (mLSpeed< -25) {
             mL.run(MLSpeed - 150);
         }
         else if (MLSpeed > 25) {
@@ -79,10 +79,10 @@ public:
         }
 
         if (MRSpeed < -25) {
-            mL.run(MRSpeed - 150);
+            mR.run(MRSpeed - 150);
         }
         else if (MRSpeed > 25) {
-            mL.run(MRSpeed + 150);
+            mR.run(MRSpeed + 150);
         }
 
         //DataTransfer::TransmitBuffer[0] = 4;
@@ -111,10 +111,10 @@ public:
     // lukClamp = hvis den er lig 0, så skal kloen åbnes, hvis den er lig 1 skal kloen lukkes
     void Squash(byte lukClamp) {
         if (lukClamp == 0) {
-            mClamp.run(fart);
+            mClamp.run(-fart);
         }
         else if (lukClamp == 1) {
-            mClamp.run(-fart);
+            mClamp.run(fart);
         }
         delay(vent);
         Stop();
