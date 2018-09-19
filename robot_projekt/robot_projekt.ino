@@ -71,7 +71,7 @@ public:
         // Lægger 150 til eller fra, fordi det er minimum hastighed for at robotten
         // overhovedet vil bevæge sig. MLSpeed og MRSpeed kan højest være på 
         // ca. 80 eller -80 pga. appens opbygning.
-        if (mLSpeed< -25) {
+        if (MLSpeed < -25) {
             mL.run(MLSpeed - 150);
         }
         else if (MLSpeed > 25) {
@@ -131,28 +131,23 @@ private:
     // bruges til at "læse" data fra appen og gøre bestemte ting
     // nofData = antallet af fundne data
     void Decode(byte nofData) {
-        for (uint8_t i = 0; i < nofData; i++) {
-            //TransmitBuffer[i] = ReceiveDataBuffer[i];
-
-            switch (ReceiveDataBuffer[i])
-            {
-            case 0:
-                manuel.Drive(ReceiveDataBuffer[++i], ReceiveDataBuffer[++i]);
-                break;
-            case 1:
-                manuel.Squash(ReceiveDataBuffer[++i]);
-                break;
-            case 2:
-                manuel.Swing(ReceiveDataBuffer[++i]);
-                break;
-            case 3:
-                AutomaticMode();
-                break;
-            default:
-                break;
-            }
+        switch (ReceiveDataBuffer[0])
+        {
+        case 0:
+            manuel.Drive(ReceiveDataBuffer[1], ReceiveDataBuffer[2]);
+            break;
+        case 1:
+            manuel.Squash(ReceiveDataBuffer[1]);
+            break;
+        case 2:
+            manuel.Swing(ReceiveDataBuffer[1]);
+            break;
+        case 3:
+            AutomaticMode();
+            break;
+        default:
+            break;
         }
-        //Send(nofData);
     }
 public:
     byte static TransmitBuffer[16];    // sende data til Appen
